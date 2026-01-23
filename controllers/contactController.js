@@ -11,7 +11,6 @@ const sendMessage = async (req, res) => {
     // Email send
     await mailOption(name, email);
     await mailOptionForme(name, email, message);
-    console.log("Message Received:", req.body);
 
     return res.status(200).json({
       success: true,
