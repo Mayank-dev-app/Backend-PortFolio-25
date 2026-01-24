@@ -19,7 +19,7 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
-app.use("/api/contact", contactRoutes);
+app.use("/api/contact/", contactRoutes);
 
 // Test route
 app.get("/", (req, res) => {
