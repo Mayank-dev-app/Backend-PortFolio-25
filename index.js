@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/contact", contactRoutes);
+app.use("/api/contact/", contactRoutes);
 
 // Test route
 app.get("/", (req, res) => {
