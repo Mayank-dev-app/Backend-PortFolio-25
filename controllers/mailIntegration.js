@@ -1,49 +1,40 @@
 const nodemailer = require("nodemailer");
 const { userMailTemplate } = require("./utills/mailtemplates");
 const { adminMailTemplate } = require("./utills/adminTemplates");
-require("dotenv").config();
-
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: '587',
-  secure: false,
+  service: "gmail",
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD, // Gmail App Password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-const mailOption = async (name, email) => {
-  try {
-    const response = await transporter.sendMail({
-      from: process.env.EMAIL,
-      to: email,
-      subject: "Message From Mayank",
-      text: "Thank you for sending your message. I will contact you soon.",
-      html: userMailTemplate(name),
-    });
-    return response;
-  } catch (error) {
-    console.error("Email error:", error);
-    throw new Error("Email not sent");
+transporter.verify((error) => {
+  if (error) {
+    console.error("SMTP Error:", error);
+  } else {
+    console.log("SMTP Server Ready");
   }
+});
+
+const mailOption = async (name, email) => {
+  return await transporter.sendMail({
+    from: `"Mayank" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Message From Mayank",
+    html: userMailTemplate(name),
+  });
 };
 
 const mailOptionForme = async (name, email, message) => {
-  try {
-    const response = await transporter.sendMail({
-      from: email,
-      to: process.env.EMAIL,
-      subject: "Message From Mayank",
-      text: "Thank you for sending your message. I will contact you soon.",
-      html: adminMailTemplate(name, email, message),
-    });
-    return response;
-  } catch (error) {
-    console.error("Email error:", error);
-    throw new Error("Email not sent");
-  }
-}
+  return await transporter.sendMail({
+    from: `"${name}" <${process.env.EMAIL_USER}>`,
+    replyTo: email,
+    to: process.env.EMAIL_USER,
+    subject: "New Contact Message",
+    html: adminMailTemplate(name, email, message),
+  });
+};
 
 module.exports = { mailOption, mailOptionForme };
